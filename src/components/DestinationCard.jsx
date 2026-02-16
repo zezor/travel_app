@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 
 export default function DestinationCard({ city, country, code }) {
   return (
-    <div className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition">
+    <div className="bg-white rounded-xl shadow-md d:hover:shadow-lg p-4 flex flex-col overflow-hidden transform transition duration-300 hover:scale-105 lg:hover:shadow-xl">
       <img
         src="https://via.placeholder.com/400x250"
         alt={city}

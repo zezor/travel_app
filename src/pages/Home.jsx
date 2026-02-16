@@ -14,7 +14,7 @@ export default function Home() {
     <>
       <Navbar />
 
-      <div className="bg-gray-50 min-h-screen pb-12">
+      <div className="bg-gray-200 min-h-screen pb-12">
         <div className="text-center pt-12">
           <h1 className="text-4xl font-bold text-gray-800">
             Plan Your Next Trip
