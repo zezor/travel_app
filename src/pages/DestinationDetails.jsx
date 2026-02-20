@@ -3,10 +3,49 @@ import { useState } from "react";
 import Navbar from "../components/Navbar";
 import FlightCard from "../components/FlightCard";
 import HotelCard from "../components/HotelCard";
+import { useItinerary } from "../context/ItineraryContext";
+import { toast } from "sonner";
 
 export default function DestinationDetails() {
   const { code } = useParams();
   const [activeTab, setActiveTab] = useState("overview");
+  const { addToItinerary } = useItinerary();
+
+  const handleAddToItinerary = (item) => {
+    const newItem = {
+      id: Date.now(),
+      name: item.name || item.airline,
+      destination: code,
+      day: 1, // default for now
+      type: item.airline ? "flight" : "hotel",
+
+    };
+
+   
+    addToItinerary(newItem);
+
+    toast.success(`${newItem.name} added to itinerary`);
+  };
+
+  const handleAddFlight = (flight) => {
+    const newItem = {
+      id: Date.now(),
+      name: flight.airline,
+      destination: code,
+      day: 1,
+      type: "flight",
+      price: flight.price,
+      departure: flight.departure,
+    };
+
+     if (newItem.some(item => item.name === flight.airline)) {
+  toast.error("Already added!");
+  return;
+}
+
+    addToItinerary(newItem);
+    toast.success(`${flight.airline} added to itinerary`);
+  };
 
   const mockFlights = [
     { airline: "Air France", price: "$450", departure: "08:00 AM" },
@@ -24,9 +63,7 @@ export default function DestinationDetails() {
 
       <div className="bg-gray-50 min-h-screen pb-12">
         <div className="max-w-6xl mx-auto px-6 pt-10">
-          <h1 className="text-4xl font-bold mb-4">
-            Destination: {code}
-          </h1>
+          <h1 className="text-4xl font-bold mb-4">Destination: {code}</h1>
 
           <img
             src="https://via.placeholder.com/1200x400"
@@ -64,7 +101,11 @@ export default function DestinationDetails() {
           {activeTab === "flights" && (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {mockFlights.map((flight, index) => (
-                <FlightCard key={index} {...flight} />
+                <FlightCard
+                  key={index}
+                  {...flight}
+                  onAdd={() => handleAddFlight(flight)}
+                />
               ))}
             </div>
           )}
@@ -72,7 +113,12 @@ export default function DestinationDetails() {
           {activeTab === "hotels" && (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {mockHotels.map((hotel, index) => (
-                <HotelCard key={index} {...hotel} />
+              <HotelCard
+                  key={index}
+                  {...hotel}
+                  onAdd={() => handleAddToItinerary(hotel)}
+                />
+
               ))}
             </div>
           )}

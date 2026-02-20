@@ -1,9 +1,15 @@
 import { useState } from "react";
 import React from "react";
 import { Trash2, Calendar, MapPin, Save, X } from "lucide-react";
-import { useItinerary } from "../context/ItineraryContext";
+
 import { toast } from "sonner";
 import Navbar from "../components/Navbar";
+import { useItinerary } from "../context/ItineraryContext";
+import { useNavigate } from "react-router-dom";
+
+
+
+
 
 export default function Itinerary() {
   const { itinerary, removeFromItinerary, clearItinerary, organizeByDays } =
@@ -11,9 +17,35 @@ export default function Itinerary() {
   const [tripName, setTripName] = useState("My Trip");
   const organizedItinerary = organizeByDays();
 
-  const handleSave = () => {
-    toast.success("Itinerary saved successfully!");
+  const navigate = useNavigate();
+
+  const { addToItinerary } = useItinerary();
+  // const handleSave = () => {
+  //   toast.success("Itinerary saved successfully!");
+  // };
+
+  const handleAddTrip = (e) => {
+  e.preventDefault();
+
+  const newItem = {
+    id: Date.now(),
+    name: activityName,
+    destination: destination,
+    day: selectedDay,
   };
+  if (itinerary.some(item => item.name === activityName && item.destination === destination && item.day === selectedDay)) {
+    toast.error("This activity is already in your itinerary for the selected day and destination!");
+    return;
+  }
+  addToItinerary(newItem);
+  toast.success(`Added "${activityName}" to itinerary!`);
+
+  // Reset form fields
+  setActivityName("");
+  setDestination("");
+  setSelectedDay(1);
+};
+
 
   const handleClear = () => {
     if (
@@ -52,7 +84,7 @@ export default function Itinerary() {
 
               <div className="flex gap-2">
                 <button
-                  onClick={handleSave}
+                  onClick={handleAddTrip}
                   className="flex-1 sm:flex-none bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md transition-colors"
                 >
                   <Save className="w-4 h-4 mr-2" />
@@ -80,7 +112,7 @@ export default function Itinerary() {
               <p className="text-gray-600 mb-6">
                 Start adding attractions from destinations to plan your trip!
               </p>
-              <button onClick={() => (window.location.href = "/")}>
+              <button onClick={() =>  navigate("/")} className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md transition-colors">
                 Explore Destinations
               </button>
             </div>
@@ -141,8 +173,6 @@ export default function Itinerary() {
                           </div>
 
                           <button
-                            variant="ghost"
-                            size="sm"
                             onClick={() => handleRemove(item.id, item.name)}
                             className="text-red-600 hover:text-red-700 hover:bg-red-50 self-start sm:self-center"
                           >
