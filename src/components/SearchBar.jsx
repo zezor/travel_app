@@ -1,17 +1,32 @@
+import { useState } from "react";
+
 export default function SearchBar({ onSearch }) {
+  const [keyword, setKeyword] = useState("");
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    onSearch(keyword);
+  };
+
   return (
-    <div className="w-full max-w-2xl mx-auto mt-8 flex">
+    <form
+      onSubmit={handleSubmit}
+      className="max-w-xl mx-auto mt-8 px-4 flex gap-2"
+    >
       <input
         type="text"
-        placeholder="Search destination..."
-        className="flex-1 p-3 border border-gray-300 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+        value={keyword}
+        onChange={(e) => setKeyword(e.target.value)}
+        placeholder="Search for a city..."
+        className="flex-1 p-3 rounded-lg border"
       />
+
       <button
-        onClick={onSearch}
-        className="bg-blue-600 text-white px-6 rounded-r-lg hover:bg-blue-700 transition"
+        type="submit"
+        className="bg-blue-600 text-white px-6 rounded-lg hover:bg-blue-700"
       >
         Search
       </button>
-    </div>
+    </form>
   );
 }
