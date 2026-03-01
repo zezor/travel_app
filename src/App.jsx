@@ -1,15 +1,22 @@
-import { BrowserRouter } from "react-router-dom";
-import AppRoutes from "./routes/AppRoutes";
-import { ItineraryProvider } from "./context/ItineraryContext";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Navbar from "./components/layout/Navbar";
+import Footer from "./components/layout/Footer";
+import Home from "./pages/Home";
+import DestinationPage from "./pages/DestinationPage";
+import ItineraryPage from "./pages/ItineraryPage";
 
-function App() {
+export default function App() {
   return (
-    <ItineraryProvider>
-      <BrowserRouter>
-        <AppRoutes />
-      </BrowserRouter>
-    </ItineraryProvider>
+    <Router>
+      <Navbar />
+
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/destination/:iataCode" element={<DestinationPage />} />
+        <Route path="/itinerary" element={<ItineraryPage />} />
+      </Routes>
+
+      <Footer />
+    </Router>
   );
 }
-
-export default App;
