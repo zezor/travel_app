@@ -1,42 +1,27 @@
-// src/pages/Home.jsx
-
-import { useEffect, useState } from "react";
+import Navbar from "../components/layout/Navbar";
 import Hero from "../components/hero/Hero";
 import DestinationList from "../components/destinations/DestinationList";
-import api from "../services/api";
+import useSearch from "../hooks/useSearch";
+import usePopularDestinations from "../hooks/usePopularDestinations";
 
 export default function Home() {
-  const [popular, setPopular] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    async function fetchPopular() {
-      try {
-        const res = await api.get("/popular-destinations/");
-        setPopular(res.data);
-      } catch (err) {
-        console.error(err);
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    fetchPopular();
-  }, []);
-
-  if (loading) return <div>Loading...</div>;
+  const { results, loading, error, searchDestinations } = useSearch();
+  const { popular } = usePopularDestinations();
 
   return (
     <>
-      <Hero popular={popular} />
 
-      <section className="p-8">
-        <h2 className="text-3xl font-bold mb-6">
-          Popular Destinations
-        </h2>
+      <Hero popular={popular} onSearch={searchDestinations} />
 
+      <div className="max-w-6xl mx-auto px-6 mt-12">
+        <h2 className="text-2xl font-semibold mb-6">Popular Destinations</h2>
         <DestinationList destinations={popular} />
-      </section>
+
+        <h2 className="text-2xl font-semibold mt-12 mb-6">Search Results</h2>
+        {loading && <p>Loading...</p>}
+        {error && <p className="text-red-600">Failed to fetch destinations</p>}
+        <DestinationList destinations={results} />
+      </div>
     </>
   );
 }

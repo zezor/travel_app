@@ -4,13 +4,13 @@ import SearchBar from "../search/SearchBar";
 
 export default function Hero({ popular }) {
   return (
-    <section className="relative h-screen flex items-center justify-center text-white">
+    <section className="relative h-screen flex items-center justify-center text-white w-full overflow-hidden">
 
       <HeroSlider slides={popular} />
 
       <div className="absolute inset-0 bg-black bg-opacity-50" />
 
-      <div className="relative z-10 text-center max-w-3xl">
+      <div className="relative z-10 text-center max-w-2xl">
         <motion.h1
           className="text-5xl font-bold"
           initial={{ y: -40, opacity: 0 }}
