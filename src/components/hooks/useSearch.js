@@ -1,22 +1,31 @@
+// src/hooks/useSearch.js
 import { useState } from "react";
-import api from "../../services/api";
+import api from "../services/api";
 
 export default function useSearch() {
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState(false);
 
-  const search = async (keyword) => {
+  const searchDestinations = async (keyword) => {
+    if (!keyword) return;
+
     try {
       setLoading(true);
-      const res = await api.get(`/search-destinations/?keyword=${keyword}`);
-      setResults(res.data);
+      setError(false);
+
+      const res = await api.get(
+        `/v1/reference-data/locations?keyword=${keyword}&subType=CITY`
+      );
+
+      setResults(res.data.data || []);
     } catch (err) {
-      setError("No destinations found.");
+      console.error(err);
+      setError(true);
     } finally {
       setLoading(false);
     }
   };
 
-  return { results, search, loading, error };
+  return { results, loading, error, searchDestinations };
 }

@@ -1,10 +1,11 @@
 // src/hooks/useDestinationDetails.js
 
 import { useEffect, useState } from "react";
-import api from "../../services/api";
 
 export default function useDestinationDetails(iataCode) {
   const [details, setDetails] = useState(null);
+  const [hotels, setHotels] = useState([]);
+  const [flights, setFlights] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -14,13 +15,31 @@ export default function useDestinationDetails(iataCode) {
     async function fetchDetails() {
       try {
         setLoading(true);
+        setError(null);
 
-        const res = await api.get(
-          `/destination-details/?iataCode=${iataCode}`
+        // 1️⃣ Get city info
+        const cityRes = await fetch(
+          `/api/city?keyword=${iataCode}`
         );
+        const cityData = await cityRes.json();
 
-        setDetails(res.data);
+        // 2️⃣ Get hotels
+        const hotelRes = await fetch(
+          `/api/hotels?cityCode=${iataCode}`
+        );
+        const hotelData = await hotelRes.json();
+
+        // 3️⃣ Get flights (example: from Accra to selected city)
+        const flightRes = await fetch(
+          `/api/flights?origin=ACC&destination=${iataCode}&date=2026-06-01`
+        );
+        const flightData = await flightRes.json();
+
+        setDetails(cityData.data?.[0] || null);
+        setHotels(hotelData.data || []);
+        setFlights(flightData.data || []);
       } catch (err) {
+        console.error(err);
         setError("Failed to load destination details.");
       } finally {
         setLoading(false);
@@ -30,5 +49,11 @@ export default function useDestinationDetails(iataCode) {
     fetchDetails();
   }, [iataCode]);
 
-  return { details, loading, error };
+  return {
+    details,
+    hotels,
+    flights,
+    loading,
+    error,
+  };
 }
