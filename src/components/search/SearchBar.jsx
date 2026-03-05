@@ -1,5 +1,5 @@
 import { useState } from "react";
-import useSearch from "../hooks/useSearch";
+import useSearch from "../../hooks/useSearch";
 import DestinationList from "../destinations/DestinationList";
 
 export default function SearchBar() {

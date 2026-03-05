@@ -1,27 +1,30 @@
+// src/components/destinations/DestinationList.jsx
+
+import DestinationCard from "./DestinationCard";
 import { Link } from "react-router-dom";
-import api from "../../services/api";
 
+export default function DestinationList({ destinations }) {
+  if (!destinations?.length) return null;
 
-export default function DestinationCard({ destination }) {
   return (
-    <div className="bg-white shadow rounded-xl overflow-hidden">
-      <img
-        src={`https://source.unsplash.com/400x300/?${destination.city}`}
-        className="w-full h-48 object-cover"
-      />
-      <div className="p-4">
-        <h3 className="text-xl font-semibold">
-          {destination.city}
-        </h3>
-        <p>{destination.country}</p>
-
+    <div
+      id="destinations"
+      className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8"
+    >
+      {destinations.map((dest) => (
         <Link
-          to={`/destination/${destination.iataCode}`}
-          className="text-blue-600 mt-3 inline-block"
+          key={dest.id || dest.iataCode}
+          to={`/destination/${dest.iataCode}`}
+          className="hover:scale-105 transition-transform"
         >
-          View Details →
+          <DestinationCard
+            city={dest.name}
+            country={dest.address?.countryName || dest.country}
+            iataCode={dest.iataCode}
+            image={dest.image || "/placeholder.jpg"} // optional fallback
+          />
         </Link>
-      </div>
+      ))}
     </div>
   );
 }

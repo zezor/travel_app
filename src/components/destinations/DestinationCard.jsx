@@ -1,26 +1,17 @@
-import { Link } from "react-router-dom";
-import api from "../../services/api";
+// src/components/destinations/DestinationCard.jsx
 
-
-export default function DestinationCard({ destination }) {
+export default function DestinationCard({ city, country, iataCode, image }) {
   return (
     <div className="bg-white shadow rounded-xl overflow-hidden">
       <img
-        src={`https://source.unsplash.com/400x300/?${destination.city}`}
+        src={image || `https://source.unsplash.com/400x300/?${city}`}
+        alt={city}
         className="w-full h-48 object-cover"
       />
-      <div className="p-4">
-        <h3 className="text-xl font-semibold">
-          {destination.city}
-        </h3>
-        <p>{destination.country}</p>
 
-        <Link
-          to={`/destination/${destination.iataCode}`}
-          className="text-blue-600 mt-3 inline-block"
-        >
-          View Details →
-        </Link>
+      <div className="p-4">
+        <h3 className="text-xl font-semibold">{city}</h3>
+        <p>{country}</p>
       </div>
     </div>
   );

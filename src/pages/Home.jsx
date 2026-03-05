@@ -1,6 +1,4 @@
-// src/pages/Home.jsx
-
-import { useEffect, useState } from "react";
+import Navbar from "../components/layout/Navbar";
 import Hero from "../components/hero/Hero";
 import DestinationList from "../components/destinations/DestinationList";
 import useSearch from "../hooks/useSearch";
@@ -12,13 +10,11 @@ export default function Home() {
 
   return (
     <>
-      <Hero popular={popular} />
+      
+      <Hero popular={popular} onSearch={searchDestinations} />
 
-      <section className="p-8">
-        <h2 className="text-3xl font-bold mb-6">
-          Popular Destinations
-        </h2>
-
+      <div className="max-w-6xl mx-auto px-6 mt-12">
+        <h2 className="text-2xl font-semibold mb-6">Popular Destinations</h2>
         <DestinationList destinations={popular} />
 
         <h2 className="text-2xl font-semibold mt-12 mb-6">Search Results</h2>

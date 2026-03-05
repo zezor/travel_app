@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import useDestinationDetails from "../hooks/useDestinationDetails";
+import useDestinationDetails from "../../hooks/useDestinationDetails";
 import FlightOffers from "../components/flights/FlightOffers";
 import HotelOffers from "../components/hotels/HotelOffers";
 import WeatherCard from "../components/weather/WeatherCard";
