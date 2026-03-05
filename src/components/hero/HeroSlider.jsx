@@ -9,7 +9,8 @@ export default function HeroSlider({ slides }) {
 
     const interval = setInterval(() => {
       setIndex((prev) => (prev + 1) % slides.length);
-    }, 5000);
+    }, 2000
+  );
 
     return () => clearInterval(interval);
   }, [slides]);
@@ -21,8 +22,8 @@ export default function HeroSlider({ slides }) {
       <AnimatePresence>
         <motion.img
           key={slides[index].city}
-          src={`https://source.unsplash.com/1600x900/?${slides[index].city}`}
-          className="w-full h-full object-cover"
+          src={`https://source.unsplash.com/1100x400/?${slides[index].city}`}
+          className="w-full h-100 object-cover"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
