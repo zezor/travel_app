@@ -2,7 +2,7 @@ import { useParams } from "react-router-dom";
 import useDestinationDetails from "../hooks/useDestinationDetails";
 import FlightOffers from "../components/flights/FlightOffers";
 import HotelOffers from "../components/hotels/HotelOffers";
-import WeatherCard from "../components/weather/WeatherCard";
+// import WeatherCard from "../components/weather/WeatherCard";
 
 export default function DestinationPage() {
   const { iataCode } = useParams();
@@ -16,7 +16,7 @@ export default function DestinationPage() {
         {details.city}
       </h1>
 
-      <WeatherCard weather={details.weather} />
+      {/* <WeatherCard weather={details.weather} /> */}
       <FlightOffers flights={details.flights} />
       <HotelOffers hotels={details.hotels} />
     </div>
