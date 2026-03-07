@@ -1,5 +1,3 @@
-// src/components/destinations/DestinationList.jsx
-
 import DestinationCard from "./DestinationCard";
 import { Link } from "react-router-dom";
 

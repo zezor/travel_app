@@ -1,5 +1,3 @@
-// src/pages/ItineraryPage.jsx
-
 import { useItineraryStore } from "../components/store/itineraryStore";
 import ItineraryItem from "../components/itinerary/ItineraryItem";
 

@@ -11,7 +11,7 @@ export default function Home() {
   return (
     <>
       
-      <Hero popular={popular} onSearch={searchDestinations} />
+      <Hero popular={popular} />
 
       <div className="max-w-6xl mx-auto px-6 mt-12">
         <h2 className="text-2xl font-semibold mb-6">Popular Destinations</h2>
@@ -19,6 +19,7 @@ export default function Home() {
 
         <h2 className="text-2xl font-semibold mt-12 mb-6">Search Results</h2>
         {loading && <p>Loading...</p>}
+        <DestinationList onSearch={searchDestinations} />
         {error && <p className="text-red-600">Failed to fetch destinations</p>}
         <DestinationList destinations={results} />
       </div>

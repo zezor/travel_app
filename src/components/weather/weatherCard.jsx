@@ -1,5 +1,3 @@
-// src/components/weather/WeatherCard.jsx
-
 export default function WeatherCard({ weather }) {
   if (!weather) return null;
 

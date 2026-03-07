@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import api from "../services/api";
+import { searchCities, getFlightOffers, getHotelOffers } from "../services/api";
 
 export default function useDestinationDetails(iataCode) {
   const [details, setDetails] = useState(null);
@@ -16,21 +16,17 @@ export default function useDestinationDetails(iataCode) {
         setLoading(true);
         setError(null);
 
-        const [cityRes, hotelRes, flightRes] = await Promise.all([
-          api.get(
-            `/v1/reference-data/locations?keyword=${iataCode}&subType=CITY`
-          ),
-          api.get(
-            `/v1/shopping/hotel-offers?cityCode=${iataCode}`
-          ),
-          api.get(
-            `/v2/shopping/flight-offers?originLocationCode=ACC&destinationLocationCode=${iataCode}&departureDate=2026-06-01&adults=1`
-          ),
+        const [cityData, flightData] = await Promise.all([
+          searchCities(iataCode),
+          getFlightOffers("ACC", iataCode, "2026-06-01"),
         ]);
 
-        setDetails(cityRes.data.data?.[0] || null);
-        setHotels(hotelRes.data.data || []);
-        setFlights(flightRes.data.data || []);
+        setDetails(cityData?.[0] || null);
+        setFlights(flightData || []);
+
+        // fetch hotels separately
+        const hotelData = await getHotelOffers(iataCode);
+        setHotels(hotelData);
       } catch (err) {
         console.error(err);
         setError("Failed to load destination details.");
