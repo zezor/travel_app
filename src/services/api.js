@@ -2,6 +2,7 @@ import axios from "axios";
 
 const API_KEY = import.meta.env.VITE_AMADEUS_API_KEY;
 const API_SECRET = import.meta.env.VITE_AMADEUS_API_SECRET;
+const UNSPLASH_KEY = import.meta.env.VITE_UNSPLASH_KEY;
 
 let token = null;
 let tokenExpires = 0;
@@ -148,6 +149,18 @@ export async function getHotelOffers(cityCode) {
     console.warn("Hotel offers failed:", cityCode);
     return [];
   }
+}
+
+
+
+export async function getCityImage(city) {
+  const res = await fetch(
+    `https://api.unsplash.com/search/photos?query=${city}&client_id=${UNSPLASH_KEY}`
+  );
+
+  const data = await res.json();
+
+  return data.results[0]?.urls?.regular;
 }
 
 export default api;

@@ -1,3 +1,4 @@
+
 export default function DestinationCard({ city, country, iataCode, image }) {
   return (
     <div className="bg-white shadow rounded-xl overflow-hidden">

@@ -16,11 +16,12 @@ export default function DestinationList({ destinations }) {
           className="hover:scale-105 transition-transform"
         >
           <DestinationCard
-            city={dest.name}
-            country={dest.address?.countryName || dest.country}
-            iataCode={dest.iataCode}
-            image={dest.image || "/placeholder.jpg"}
-          />
+          key={dest.iataCode}
+          city={dest.city}
+          country={dest.country}
+          iataCode={dest.iataCode}
+          image={`https://source.unsplash.com/400x300/?${dest.city}`}
+        />
         </Link>
       ))}
     </div>
