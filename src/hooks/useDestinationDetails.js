@@ -8,35 +8,34 @@ export default function useDestinationDetails(iataCode) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    if (!iataCode) return;
+ useEffect(() => {
+  if (!iataCode) return;
 
-    async function fetchDetails() {
-      try {
-        setLoading(true);
-        setError(null);
+  async function fetchDetails() {
+    try {
+      setLoading(true);
 
-        const [cityData, flightData] = await Promise.all([
-          searchCities(iataCode),
-          getFlightOffers("ACC", iataCode, "2026-06-01"),
-        ]);
+      const [city, flights, hotels] = await Promise.all([
+        searchCities(iataCode),
+        getFlightOffers("ACC", iataCode, "2026-06-01"),
+        getHotelOffers(iataCode),
+      ]);
 
-        setDetails(cityData?.[0] || null);
-        setFlights(flightData || []);
+      setDetails(city?.[0] || null);
+      setFlights(flights);
+      setHotels(hotels);
 
-        // fetch hotels separately
-        const hotelData = await getHotelOffers(iataCode);
-        setHotels(hotelData);
-      } catch (err) {
-        console.error(err);
-        setError("Failed to load destination details.");
-      } finally {
-        setLoading(false);
-      }
+    } catch (error) {
+      console.error(error);
+      setError("Failed to load destination data");
+    } finally {
+      setLoading(false);
     }
+  }
 
-    fetchDetails();
-  }, [iataCode]);
+  fetchDetails();
+
+}, [iataCode]);
 
   return { details, hotels, flights, loading, error };
 }

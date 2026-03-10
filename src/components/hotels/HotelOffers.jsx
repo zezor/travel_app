@@ -1,13 +1,9 @@
-// src/components/hotels/HotelOffers.jsx
-
 import { useItineraryStore } from "../store/itineraryStore";
 
 export default function HotelOffers({ hotels }) {
   const addItem = useItineraryStore((state) => state.addItem);
 
-  if (!hotels?.length) {
-    return <p>No hotels found.</p>;
-  }
+  if (!hotels?.length) return <p>No hotels found.</p>;
 
   return (
     <div>
@@ -16,17 +12,20 @@ export default function HotelOffers({ hotels }) {
       </h2>
 
       <div className="grid md:grid-cols-3 gap-4">
-        {hotels.map((hotel, index) => (
+        {hotels.map((hotel) => (
           <div
-            key={index}
+            key={hotel.hotel.hotelId}
             className="bg-white p-4 rounded-xl shadow"
           >
             <h3 className="font-semibold">
-              {hotel.name}
+              {hotel.hotel.name}
             </h3>
-            <p>Rating: {hotel.rating}</p>
+
+            <p>Rating: {hotel.hotel.rating || "N/A"}</p>
+
             <p className="text-blue-600 font-bold">
-              GHS {hotel.price}
+              {hotel.offers?.[0]?.price?.currency}{" "}
+              {hotel.offers?.[0]?.price?.total}
             </p>
 
             <button
@@ -34,7 +33,7 @@ export default function HotelOffers({ hotels }) {
                 addItem({
                   id: Date.now(),
                   type: "hotel",
-                  name: hotel.name,
+                  name: hotel.hotel.name,
                 })
               }
               className="mt-3 bg-green-600 text-white px-4 py-2 rounded"

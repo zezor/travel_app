@@ -6,19 +6,23 @@ import HotelOffers from "../components/hotels/HotelOffers";
 
 export default function DestinationPage() {
   const { iataCode } = useParams();
-  const { details } = useDestinationDetails(iataCode);
 
-  if (!details) return <div>Loading...</div>;
+  const { details, flights, hotels, loading } =
+    useDestinationDetails(iataCode);
+
+  if (loading) return <div>Loading...</div>;
 
   return (
     <div className="p-8 space-y-8">
       <h1 className="text-4xl font-bold">
-        {details.city}
+        {details?.name}
       </h1>
 
-      {/* <WeatherCard weather={details.weather} /> */}
-      <FlightOffers flights={details.flights} />
-      <HotelOffers hotels={details.hotels} />
+      {/* <WeatherCard city={details?.name} /> */}
+
+      <FlightOffers flights={flights} />
+
+      <HotelOffers hotels={hotels} />
     </div>
   );
 }

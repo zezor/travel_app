@@ -1,50 +1,51 @@
-// src/components/flights/FlightOffers.jsx
-
 import { useItineraryStore } from "../store/itineraryStore";
 
 export default function FlightOffers({ flights }) {
   const addItem = useItineraryStore((state) => state.addItem);
 
-  if (!flights?.length) {
-    return <p>No flight offers available.</p>;
-  }
+  if (!flights?.length) return <p>No flight offers available.</p>;
 
   return (
     <div>
-      <h2 className="text-2xl font-bold mb-4">
-        Flight Offers
-      </h2>
+      <h2 className="text-2xl font-bold mb-4">Flight Offers</h2>
 
       <div className="grid md:grid-cols-2 gap-4">
-        {flights.map((flight, index) => (
-          <div
-            key={index}
-            className="bg-white p-4 rounded-xl shadow"
-          >
-            <p className="font-semibold">
-              {flight.airline}
-            </p>
-            <p>
-              {flight.departure} → {flight.arrival}
-            </p>
-            <p className="text-blue-600 font-bold">
-              GHS {flight.price}
-            </p>
+        {flights.map((flight) => {
+          const segment = flight.itineraries?.[0]?.segments?.[0];
 
-            <button
-              onClick={() =>
-                addItem({
-                  id: Date.now(),
-                  type: "flight",
-                  name: `${flight.airline} Flight`,
-                })
-              }
-              className="mt-3 bg-blue-600 text-white px-4 py-2 rounded"
+          return (
+            <div
+              key={flight.id}
+              className="bg-white p-4 rounded-xl shadow"
             >
-              Add to Itinerary
-            </button>
-          </div>
-        ))}
+              <p className="font-semibold">
+                {segment?.carrierCode}
+              </p>
+
+              <p>
+                {segment?.departure?.iataCode} →{" "}
+                {segment?.arrival?.iataCode}
+              </p>
+
+              <p className="text-blue-600 font-bold">
+                {flight.price?.currency} {flight.price?.total}
+              </p>
+
+              <button
+                onClick={() =>
+                  addItem({
+                    id: Date.now(),
+                    type: "flight",
+                    name: `${segment?.carrierCode} Flight`,
+                  })
+                }
+                className="mt-3 bg-blue-600 text-white px-4 py-2 rounded"
+              >
+                Add to Itinerary
+              </button>
+            </div>
+          );
+        })}
       </div>
     </div>
   );

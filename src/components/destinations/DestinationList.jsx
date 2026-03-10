@@ -9,17 +9,17 @@ export default function DestinationList({ destinations }) {
       id="destinations"
       className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8"
     >
-      {destinations.map((dest) => (
+      {destinations.map((dest, index) => (
         <Link
-          key={dest.id || dest.iataCode}
-          to={`/destination/${dest.iataCode}`}
+          key={dest.iataCode || dest.id || index}
+          to={`/destination/${dest.iataCode || dest.id}`}
           className="hover:scale-105 transition-transform"
         >
           <DestinationCard
             city={dest.name}
             country={dest.address?.countryName || dest.country}
             iataCode={dest.iataCode}
-            image={dest.image || "/placeholder.jpg"} // optional fallback
+            image={dest.image || "/placeholder.jpg"}
           />
         </Link>
       ))}

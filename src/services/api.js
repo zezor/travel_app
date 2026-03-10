@@ -10,9 +10,12 @@ const api = axios.create({
   baseURL: "https://test.api.amadeus.com",
 });
 
-// Get OAuth Token
+// =======================
+// OAuth Token
+// =======================
 async function getToken() {
   const now = Date.now();
+
   if (token && tokenExpires > now) return token;
 
   const res = await axios.post(
@@ -35,7 +38,7 @@ async function getToken() {
   return token;
 }
 
-// Attach token automatically
+// attach token automatically
 api.interceptors.request.use(async (config) => {
   const accessToken = await getToken();
   config.headers.Authorization = `Bearer ${accessToken}`;
@@ -43,55 +46,106 @@ api.interceptors.request.use(async (config) => {
 });
 
 
-
 /* =========================
    AMADEUS API FUNCTIONS
 ========================= */
 
-// Search city / airport
+// Search cities
 export async function searchCities(keyword) {
-  const res = await api.get(
-    `/v1/reference-data/locations`,
-    {
+  try {
+    const res = await api.get("/v1/reference-data/locations", {
       params: {
         keyword,
         subType: "CITY",
       },
-    }
-  );
+    });
 
-  return res.data.data;
+    return res.data.data || [];
+  } catch (error) {
+    console.error("City search failed:", error);
+    return [];
+  }
 }
 
 
 // Flight offers
 export async function getFlightOffers(origin, destination, date) {
-  const res = await api.get(
-    `/v2/shopping/flight-offers`,
-    {
+  try {
+    if (!origin || !destination) return [];
+
+    const res = await api.get("/v2/shopping/flight-offers", {
       params: {
         originLocationCode: origin,
         destinationLocationCode: destination,
         departureDate: date,
         adults: 1,
       },
-    }
-  );
-
-  return res.data.data;
-}
-
-
-// Hotel offers
-export async function getHotelOffers(cityCode) {
-  try {
-    const res = await api.get("/v3/shopping/hotel-offers", {
-      params: { cityCode },
     });
 
     return res.data.data || [];
-  } catch (err) {
-    console.warn("Hotel API failed for city:", cityCode);
+
+  } catch (error) {
+
+    if (error.response?.status === 429) {
+      console.warn("Amadeus rate limit reached. Retrying in 2 seconds...");
+
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+
+      return getFlightOffers(origin, destination, date);
+    }
+
+    console.error("Flight API failed:", error);
+    return [];
+  }
+}
+
+
+// Step 1: get hotels in city
+export async function getHotelsByCity(cityCode) {
+  try {
+    if (!cityCode || cityCode.length !== 3) return [];
+
+    const res = await api.get(
+      "/v1/reference-data/locations/hotels/by-city",
+      {
+        params: { cityCode },
+      }
+    );
+
+    return res.data.data || [];
+
+  } catch (error) {
+
+    if (error.response?.status === 400) {
+      console.warn("Hotels not supported for city:", cityCode);
+      return [];
+    }
+
+    console.error("Hotel city lookup failed:", error);
+    return [];
+  }
+}
+
+
+// Step 2: get hotel offers
+export async function getHotelOffers(cityCode) {
+  try {
+    const hotels = await getHotelsByCity(cityCode);
+
+    if (!hotels.length) return [];
+
+    const hotelIds = hotels.slice(0, 10).map((h) => h.hotelId);
+
+    const res = await api.get("/v3/shopping/hotel-offers", {
+      params: {
+        hotelIds: hotelIds.join(","),
+      },
+    });
+
+    return res.data.data || [];
+
+  } catch (error) {
+    console.warn("Hotel offers failed:", cityCode);
     return [];
   }
 }
