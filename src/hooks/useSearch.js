@@ -13,17 +13,22 @@ export default function useSearch() {
       setLoading(true);
       setError(false);
 
-      const res = await api.get(
-        `/v1/reference-data/locations`,
-        {
-          params: {
-            keyword,
-            subType: "CITY",
-          },
-        }
-      );
+      const res = await api.get("/v1/reference-data/locations", {
+        params: {
+          keyword,
+          subType: "CITY",
+        },
+      });
 
-      setResults(res.data.data || []);
+      const cities = res.data.data.map((city) => ({
+        city: city.name,
+        country: city.address?.countryName,
+        iataCode: city.iataCode,
+        image: `https://source.unsplash.com/400x300/?${city.name},city`,
+      }));
+
+      setResults(cities);
+
     } catch (err) {
       console.error(err);
       setError(true);

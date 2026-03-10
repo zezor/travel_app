@@ -22,12 +22,12 @@ export default function HeroSlider({ slides }) {
       <AnimatePresence>
         <motion.img
           key={slides[index].city}
-          src={`https://source.unsplash.com/1100x400/?${slides[index].city}`}
-          className="w-full h-100 object-cover"
-          initial={{ opacity: 0 }}
+          src={`../../hero.jpg`}
+          className="w-full h-50 object-cover"
+          initial={{ opacity: 10 }}
           animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 1 }}
+          exit={{ opacity: 1 }}
+          transition={{ duration: 10 }}
         />
       </AnimatePresence>
     </div>
